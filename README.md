@@ -159,5 +159,5 @@ And of course, **thank you** for your interest in **Discord Account Manager**! W
 
 ### 🏆 Support & Feedback
 
-If you encounter any issues or have suggestions for improvement, feel free to open an issue in the [Issues](https://github.com/your-username/discord-account-manager/issues) section, or contact us directly.
+If you encounter any issues or have suggestions for improvement, feel free to open an issue in the [Issues](https://github.com/Bherl1/DiscordAccMgr/issues) section, or contact us directly.
 
