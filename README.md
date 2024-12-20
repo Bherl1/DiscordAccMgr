@@ -48,8 +48,8 @@ npm -v
 First, clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/your-username/discord-account-manager.git
-cd discord-account-manager
+git clone https://github.com/Bherl1/DiscordAccMgr.git
+cd DiscordAccMgr
 ```
 
 ### Install Dependencies
@@ -76,7 +76,7 @@ This will open the Electron window with the app running.
 
 For Windows users, you can download a precompiled `.exe` file from the **Releases** section:
 
-1. Go to the [Releases](https://github.com/your-username/discord-account-manager/releases) page.
+1. Go to the [Releases](https://github.com/Bherl1/DiscordAccMgr/release) page.
 2. Download the `.exe` file.
 3. Double-click the `.exe` to launch the app.
 
