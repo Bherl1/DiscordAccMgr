@@ -129,9 +129,9 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🔗 Links
 
-- **Discord Server**: [Join our community](link_to_discord_server)
-- **Website**: [Visit the official site](link_to_website)
-- **Bug Tracker**: [Report an issue](link_to_issues)
+- **Discord Server**: [Join our community](https://discord.gg/7wVU2jnjey)
+- **Website**: [Visit the official site](https://kroniker.fr/bherl1)
+- **Bug Tracker**: [Report an issue](https://github.com/Bherl1/DiscordAccMgr/issues)
 
 ---
 
@@ -140,7 +140,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 We'd like to thank the following libraries and tools for making this project possible:
 
 - [Electron.js](https://www.electronjs.org/)
-- [Discord.js](https://discord.js.org/)
+- [Discord.js-Selfbot-V13](https://www.npmjs.com/package/discord.js-selfbot-v13)
 - [Node.js](https://nodejs.org/)
 - [npm](https://npmjs.com/)
 
