@@ -20,8 +20,8 @@
 
 Here are a few screenshots of the app in action:
 
-![Discord Account Manager Screenshot 1](link_to_screenshot_1)
-![Discord Account Manager Screenshot 2](link_to_screenshot_2)
+![Dm Manager](https://cdn.discordapp.com/attachments/1108882288617476096/1319694397880926260/image.png?ex=6766e4af&is=6765932f&hm=b7becbef95feaf3eee8718f35b4ccdaf0423d9e11b5240d85d54b78393d9ad0a&)
+![Server Manager](https://cdn.discordapp.com/attachments/1108882288617476096/1319694440025296937/image.png?ex=6766e4b9&is=67659339&hm=fe0a9862b12a0b0dbb4d3ce495762996f15086ccb604a2ed0a5f4b176e11899b&)
 
 ---
 
