@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Manager</title>
+  <link rel="stylesheet" href="src/styles/layout.css">
+  <link rel="stylesheet" href="src/styles/titlebar.css">
+  <link rel="stylesheet" href="src/styles/components.css">
+</head>
+<body>
+  <div class="app-container">
+    <div class="title-bar">
+      <div class="title">
+        Discord Manager
+      </div>
+      <div class="window-controls">
+        <button id="minimizeBtn">─</button>
+        <button id="maximizeBtn">□</button>
+        <button id="closeBtn">×</button>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="container">
+        <div class="connection-panel">
+          <h2>Connection</h2>
+          <input type="password" id="tokenInput" placeholder="Enter your Discord token">
+          <button id="connectBtn">Connect</button>
+          <p id="status"></p>
+        </div>
+
+        <div class="actions" id="actions" style="display: none;">
+          <div class="action-card">
+            <h3>Friends Manager</h3>
+            <button id="friendsBtn">Manage Friends</button>
+          </div>
+          
+          <div class="action-card">
+            <h3>Server Manager</h3>
+            <button id="serversBtn">Manage Servers</button>
+          </div>
+
+          <div class="action-card">
+            <h3>DM Manager</h3>
+            <button id="dmsBtn">Manage DMs</button>
+          </div>
+        </div>
+
+        <div id="contentArea"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

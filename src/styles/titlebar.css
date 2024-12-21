@@ -1,0 +1,52 @@
+.title-bar {
+  height: var(--title-bar-height);
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  -webkit-app-region: drag;
+  border-bottom: 1px solid var(--bg-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.title-bar .title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.title-bar .title img {
+  width: 16px;
+  height: 16px;
+}
+
+.window-controls {
+  display: flex;
+  -webkit-app-region: no-drag;
+}
+
+.window-controls button {
+  width: 46px;
+  height: var(--title-bar-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+
+.window-controls button:hover {
+  opacity: 1;
+  background: var(--bg-secondary);
+}
+
+.window-controls button:last-child:hover {
+  background: var(--danger);
+}
