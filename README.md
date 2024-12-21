@@ -20,8 +20,9 @@
 
 Here are a few screenshots of the app in action:
 
-![Dm Manager](https://cdn.discordapp.com/attachments/1108882288617476096/1319694397880926260/image.png?ex=6766e4af&is=6765932f&hm=b7becbef95feaf3eee8718f35b4ccdaf0423d9e11b5240d85d54b78393d9ad0a&)
-![Server Manager](https://cdn.discordapp.com/attachments/1108882288617476096/1319694440025296937/image.png?ex=6766e4b9&is=67659339&hm=fe0a9862b12a0b0dbb4d3ce495762996f15086ccb604a2ed0a5f4b176e11899b&)
+![Dm Manager](./images/1.png)
+![Server Manager](./images/2.png)
+![Friends Manager](./images/3.png)
 
 ---
 
