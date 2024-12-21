@@ -76,7 +76,7 @@ This will open the Electron window with the app running.
 
 For Windows users, you can download a precompiled `.exe` file from the **Releases** section:
 
-1. Go to the [Releases](https://github.com/Bherl1/DiscordAccMgr/release) page.
+1. Go to the [Releases](https://github.com/Bherl1/DiscordAccMgr/releases) page.
 2. Download the `.exe` file.
 3. Double-click the `.exe` to launch the app.
 
@@ -130,7 +130,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🔗 Links
 
 - **Discord Server**: [Join our community](https://discord.gg/7wVU2jnjey)
-- **Website**: [Visit the official site](https://kroniker.fr/bherl1)
 - **Bug Tracker**: [Report an issue](https://github.com/Bherl1/DiscordAccMgr/issues)
 
 ---
