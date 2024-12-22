@@ -224,21 +224,22 @@ ipcMain.handle('discord:closeDM', async (_, channelId) => {
 
 ipcMain.handle('discord:deleteFriend', async (_, friendId) => {
   try {
-    if (!discordClient || !discordClient.user) {
-      return { 
-        success: false, 
-        error: 'Not connected' 
-      };
+    if (!discordClient || !discordClient.token) {
+      return { success: false, error: 'Not connected to Discord' };
     }
 
-    await discordClient.user.removeFriend(friendId);
+    // Use the REST API to remove friend since the client method is not available
+    await axios.delete(`https://discord.com/api/v9/users/@me/relationships/${friendId}`, {
+      headers: {
+        'Authorization': discordClient.token,
+        'Content-Type': 'application/json'
+      }
+    });
+
     return { success: true };
   } catch (error) {
     console.error('Delete friend error:', error);
-    return { 
-      success: false, 
-      error: error.message 
-    };
+    return { success: false, error: error.message };
   }
 });
 

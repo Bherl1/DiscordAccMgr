@@ -12,12 +12,25 @@
   <div class="app-container">
     <div class="title-bar">
       <div class="title">
-        Discord Manager
+        Discord Account Manager
       </div>
       <div class="window-controls">
-        <button id="minimizeBtn">─</button>
-        <button id="maximizeBtn">□</button>
-        <button id="closeBtn">×</button>
+        <button id="minimizeBtn">
+          <svg viewBox="0 0 12 12">
+            <rect width="10" height="1" x="1" y="6"></rect>
+          </svg>
+        </button>
+        <button id="maximizeBtn">
+          <svg viewBox="0 0 12 12">
+            <rect width="9" height="9" x="1.5" y="1.5" fill="none" stroke="currentColor"></rect>
+          </svg>
+        </button>
+        <button id="closeBtn">
+          <svg viewBox="0 0 12 12">
+            <line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="1"/>
+            <line x1="1" y1="11" x2="11" y2="1" stroke="currentColor" stroke-width="1"/>
+          </svg>
+        </button>        
       </div>
     </div>
 
@@ -25,8 +38,13 @@
       <div class="container">
         <div class="connection-panel">
           <h2>Connection</h2>
-          <input type="password" id="tokenInput" placeholder="Enter your Discord token">
-          <button id="connectBtn">Connect</button>
+          <div class="input-group">
+            <input type="password" id="tokenInput" placeholder="Enter your Discord token">
+            <button id="connectBtn">
+              <span class="btn-text">Connect</span>
+              <div class="loader" style="display: none;"></div>
+            </button>
+          </div>
           <p id="status"></p>
         </div>
 

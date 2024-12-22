@@ -14,7 +14,7 @@
     "discord.js-selfbot-v13": "^3.1.4"
   },
   "devDependencies": {
-    "electron": "^29.1.1",
+    "electron": "^29.4.6",
     "electron-builder": "^25.1.8"
   },
   "build": {
