@@ -1,10 +1,18 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
 const axios = require('axios');
+const fs = require('fs');
 const { Client } = require('discord.js-selfbot-v13');
 
 let mainWindow;
 let discordClient = null;
+const tokensPath = path.join(app.getPath('userData'), 'saved_tokens.json');
+
+// Ensure tokens file exists
+if (!fs.existsSync(tokensPath)) {
+  fs.writeFileSync(tokensPath, '[]', 'utf8');
+}
+
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -32,6 +40,69 @@ ipcMain.on('window:maximize', () => {
   }
 });
 ipcMain.on('window:close', () => mainWindow.close());
+
+// External links
+ipcMain.handle('app:openExternal', async (_, url) => {
+  await shell.openExternal(url);
+});
+
+// Token management
+ipcMain.handle('tokens:save', async (_, name, token) => {
+  try {
+    const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+    if (tokens.some(t => t.name === name)) {
+      return { success: false, error: 'A token with this name already exists' };
+    }
+    tokens.push({ name, token });
+    fs.writeFileSync(tokensPath, JSON.stringify(tokens, null, 2));
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('tokens:get', async () => {
+  try {
+    const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+    return { success: true, tokens };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('tokens:delete', async (_, name) => {
+  try {
+    const tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf8'));
+    const newTokens = tokens.filter(t => t.name !== name);
+    fs.writeFileSync(tokensPath, JSON.stringify(newTokens, null, 2));
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+// Check for updates
+ipcMain.handle('app:checkUpdates', async () => {
+  try {
+    const response = await axios.get('https://raw.githubusercontent.com/Bherl1/DiscordAccMgr/refs/heads/main/package.json');
+    const latestVersion = response.data.version;
+    const currentVersion = require('../package.json').version;
+    
+    return {
+      hasUpdate: latestVersion > currentVersion,
+      version: latestVersion,
+      downloadUrl: `https://github.com/Bherl1/DiscordAccMgr/releases/download/v${latestVersion}/DiscordAccManager-Setup.exe`
+    };
+  } catch (error) {
+    console.error('Update check failed:', error);
+    return { hasUpdate: false };
+  }
+});
+
+// Download update
+ipcMain.handle('app:downloadUpdate', async (_, url) => {
+  require('electron').shell.openExternal(url);
+});
 
 // Discord handlers
 ipcMain.handle('discord:connect', async (_, token) => {

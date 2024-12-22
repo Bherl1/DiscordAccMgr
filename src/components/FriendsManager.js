@@ -1,4 +1,5 @@
-import { copyToClipboard, showProgressModal } from '../utils/ui.js';
+import { showProgressModal } from '../utils/ui.js';
+import { copyToClipboard } from '../utils/clipboard.js';
 
 export class FriendsManager {
   constructor(contentArea) {

@@ -1,9 +1,16 @@
-import { getFriendsList, getServersList, copyToClipboard, showNotification } from './utils/discord.js';
+import { checkForUpdates } from './utils/updates.js';
+import { loadSavedTokens, saveToken } from './utils/tokenManager.js';
 import { DMManager } from './components/DMManager.js';
 import { ServerManager } from './components/ServerManager.js';
+import { FriendsManager } from './components/FriendsManager.js';
+import { showInfoModal } from './utils/ui.js';
+import { copyToClipboard } from './utils/clipboard.js';
+import { getFriendsList } from './utils/discord.js';  // Ajout de l'import manquant
 
+// Initialize DOM elements
 const tokenInput = document.getElementById('tokenInput');
 const connectBtn = document.getElementById('connectBtn');
+const saveTokenBtn = document.getElementById('saveTokenBtn');
 const status = document.getElementById('status');
 const actions = document.getElementById('actions');
 const contentArea = document.getElementById('contentArea');
@@ -11,12 +18,29 @@ const contentArea = document.getElementById('contentArea');
 // Initialize managers
 window.dmManager = new DMManager(contentArea);
 window.serverManager = new ServerManager(contentArea);
+window.friendsManager = new FriendsManager(contentArea);
+
+// Make utilities globally available
+window.copyToClipboard = copyToClipboard;
+window.getFriendsList = getFriendsList;  // Rendre la fonction disponible globalement
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await checkForUpdates();
+    await loadSavedTokens();
+  } catch (error) {
+    console.error('Error during initialization:', error);
+  }
+});
 
 // Window controls
 document.getElementById('minimizeBtn').addEventListener('click', () => window.electronAPI.minimize());
 document.getElementById('maximizeBtn').addEventListener('click', () => window.electronAPI.maximize());
 document.getElementById('closeBtn').addEventListener('click', () => window.electronAPI.close());
+document.getElementById('infoBtn').addEventListener('click', showInfoModal);
+saveTokenBtn.addEventListener('click', () => saveToken(tokenInput.value, status));
 
+// Connect button handler
 connectBtn.addEventListener('click', async () => {
   const token = tokenInput.value;
   if (!token) {
@@ -25,7 +49,6 @@ connectBtn.addEventListener('click', async () => {
     return;
   }
 
-  // Show loading state
   const btnText = connectBtn.querySelector('.btn-text');
   const loader = connectBtn.querySelector('.loader');
   btnText.style.display = 'none';
@@ -46,7 +69,6 @@ connectBtn.addEventListener('click', async () => {
     status.textContent = 'Connection failed';
     status.className = 'error';
   } finally {
-    // Reset loading state
     btnText.style.display = 'inline-block';
     loader.style.display = 'none';
     connectBtn.disabled = false;
