@@ -1,10 +1,55 @@
 import { getServersList, copyToClipboard } from '../utils/discord.js';
+import { showNotification, showProgressModal } from '../utils/ui.js';
 
 export class ServerManager {
   constructor(contentArea) {
     this.contentArea = contentArea;
   }
 
+  async muteServer(serverId) {
+    try {
+      await window.electronAPI.muteServer(serverId);
+      this.refreshServersList();
+    } catch (error) {
+      console.error('Failed to mute server:', error);
+    }
+  }
+  
+  async unmuteServer(serverId) {
+    try {
+      await window.electronAPI.unmuteServer(serverId);
+      this.refreshServersList();
+    } catch (error) {
+      console.error('Failed to unmute server:', error);
+    }
+  }
+  
+  async muteSelectedServers() {
+    const selectedServers = document.querySelectorAll('.server-checkbox:checked');
+    const total = selectedServers.length;
+    let completed = 0;
+  
+    const { updateProgress, closeModal } = showProgressModal('Muting Servers', total);
+  
+    for (const checkbox of selectedServers) {
+      const serverItem = checkbox.closest('.list-item');
+      const serverId = serverItem.dataset.id;
+      
+      try {
+        await window.electronAPI.muteServer(serverId);
+        completed++;
+        updateProgress(completed);
+      } catch (error) {
+        console.error('Failed to mute server:', error);
+      }
+    }
+  
+    setTimeout(() => {
+      closeModal();
+      this.refreshServersList();
+    }, 1000);
+  }
+  
   async refreshServersList() {
     try {
       const servers = await getServersList();
@@ -14,6 +59,8 @@ export class ServerManager {
         <div class="actions-bar">
           <button id="selectAllServersBtn" onclick="window.serverManager.toggleSelectAllServers()">Select All</button>
           <button id="leaveSelectedServersBtn" onclick="window.serverManager.leaveSelectedServers()" disabled>Leave Selected</button>
+          <button id="muteSelectedServersBtn" onclick="window.serverManager.muteSelectedServers()" disabled>Mute Selected</button>
+          <button id="readAllBtn" onclick="window.serverManager.readAll()">Read All</button>
         </div>
         <div id="serversList">
           ${servers.map(server => `
@@ -25,6 +72,7 @@ export class ServerManager {
               </div>
               <div class="button-group">
                 <button onclick="window.serverManager.copyToClipboard('${server.id}')" class="secondary-btn">Copy ID</button>
+                <button onclick="window.serverManager.muteServer('${server.id}')" class="secondary-btn">Mute</button>
                 <button onclick="window.serverManager.leaveServer('${server.id}')" class="danger-btn">Leave</button>
               </div>
             </div>
@@ -35,6 +83,21 @@ export class ServerManager {
       this.contentArea.innerHTML = `<p class="error">${error.message}</p>`;
     }
   }
+  
+  async readAll() {
+    try {
+      const result = await window.electronAPI.readAll();
+      if (result.success) {
+        showNotification('Marked all as read!');
+      } else {
+        showNotification('Failed to mark all as read');
+      }
+    } catch (error) {
+      console.error('Read all error:', error);
+      showNotification('Failed to mark all as read');
+    }
+  }
+
 
   toggleSelectAllServers() {
     const checkboxes = document.querySelectorAll('.server-checkbox');
@@ -52,8 +115,13 @@ export class ServerManager {
   updateSelectedServersCount() {
     const selectedCount = document.querySelectorAll('.server-checkbox:checked').length;
     const leaveSelectedBtn = document.getElementById('leaveSelectedServersBtn');
+    const muteSelectedBtn = document.getElementById('muteSelectedServersBtn');
+    
     leaveSelectedBtn.disabled = selectedCount === 0;
+    muteSelectedBtn.disabled = selectedCount === 0;
+    
     leaveSelectedBtn.textContent = `Leave Selected (${selectedCount})`;
+    muteSelectedBtn.textContent = `Mute Selected (${selectedCount})`;
   }
 
   async leaveSelectedServers() {
@@ -61,20 +129,7 @@ export class ServerManager {
     const total = selectedServers.length;
     let completed = 0;
 
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Leaving Servers</h2>
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress" style="width: 0%"></div>
-          </div>
-          <div class="progress-text">0/${total}</div>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
+    const { updateProgress, closeModal } = showProgressModal('Leaving Servers', total);
 
     for (const checkbox of selectedServers) {
       const serverItem = checkbox.closest('.list-item');
@@ -83,11 +138,7 @@ export class ServerManager {
       try {
         await window.electronAPI.leaveServer(serverId);
         completed++;
-        
-        const progress = (completed / total) * 100;
-        modal.querySelector('.progress').style.width = `${progress}%`;
-        modal.querySelector('.progress-text').textContent = `${completed}/${total}`;
-        
+        updateProgress(completed);
         serverItem.remove();
       } catch (error) {
         console.error('Failed to leave server:', error);
@@ -95,7 +146,7 @@ export class ServerManager {
     }
 
     setTimeout(() => {
-      modal.remove();
+      closeModal();
       this.refreshServersList();
     }, 1000);
   }

@@ -1,3 +1,20 @@
+export const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification('Copied to clipboard!');
+  } catch (error) {
+    console.error('Failed to copy:', error);
+  }
+};
+
+export const showNotification = (message) => {
+  const notification = document.createElement('div');
+  notification.className = 'copy-notification';
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 2000);
+};
+
 export const showProgressModal = (title, total) => {
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
@@ -57,7 +74,7 @@ export const showInfoModal = () => {
   title.textContent = 'Discord Account Manager';
 
   const version = document.createElement('p');
-  version.textContent = `Version 1.3.0`;
+  version.textContent = `Version 1.4.0`;
 
   const author = document.createElement('p');
   author.textContent = 'Created by Bherl1';

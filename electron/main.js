@@ -41,6 +41,75 @@ ipcMain.on('window:maximize', () => {
 });
 ipcMain.on('window:close', () => mainWindow.close());
 
+ipcMain.handle('discord:muteServer', async (_, serverId) => {
+  try {
+    if (!discordClient || !discordClient.token) {
+      return { success: false, error: 'Not connected' };
+    }
+
+    await axios.patch(`https://discord.com/api/v9/users/@me/guilds/${serverId}/settings`, {
+      muted: true
+    }, {
+      headers: {
+        'Authorization': discordClient.token,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Mute server error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('discord:unmuteServer', async (_, serverId) => {
+  try {
+    if (!discordClient || !discordClient.token) {
+      return { success: false, error: 'Not connected' };
+    }
+
+    await axios.patch(`https://discord.com/api/v9/users/@me/guilds/${serverId}/settings`, {
+      muted: false
+    }, {
+      headers: {
+        'Authorization': discordClient.token,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Unmute server error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('discord:readAll', async () => {
+  try {
+    if (!discordClient || !discordClient.token) {
+      return { success: false, error: 'Not connected' };
+    }
+
+    // Get all guilds
+    const guilds = Array.from(discordClient.guilds.cache.values());
+    
+    // Mark each guild as read
+    for (const guild of guilds) {
+      try {
+        await guild.markAsRead();
+      } catch (error) {
+        console.error(`Failed to mark guild ${guild.id} as read:`, error);
+      }
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Read all error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
 // External links
 ipcMain.handle('app:openExternal', async (_, url) => {
   await shell.openExternal(url);
