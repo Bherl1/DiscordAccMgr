@@ -206,21 +206,31 @@
 /* Connection Panel */
 .connection-panel {
   background: var(--bg-secondary);
-  padding: 24px;
+  padding: clamp(16px, 2vw, 24px);
   border-radius: 8px;
-  margin-bottom: 24px;
+  margin-bottom: clamp(16px, 2vw, 24px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .connection-panel h2 {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: clamp(12px, 1.5vw, 16px);
 }
 
 .input-group {
-  position: relative;
   display: flex;
-  gap: 8px;
+  gap: clamp(4px, 1vw, 8px);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .input-group button {
+    width: 100%;
+  }
 }
 
 .loader {
@@ -240,9 +250,19 @@
 
 .actions-bar {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: clamp(8px, 1vw, 12px);
+  margin-bottom: clamp(12px, 1.5vw, 16px);
   flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .actions-bar {
+    flex-direction: column;
+  }
+  
+  .actions-bar button {
+    width: 100%;
+  }
 }
 
 .actions-bar button {
@@ -267,24 +287,22 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  opacity: 0;
-  animation: fadeIn 0.3s ease forwards;
+  backdrop-filter: blur(5px);
+  padding: clamp(16px, 2vw, 24px);
 }
 
 .modal-content {
   background: var(--bg-secondary);
-  padding: 24px;
+  padding: clamp(16px, 2vw, 24px);
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  transform: translateY(20px);
-  opacity: 0;
-  animation: slideIn 0.3s ease forwards;
+  width: min(90%, 500px);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @keyframes fadeIn {
@@ -370,17 +388,17 @@ button:disabled {
   background: #c41020;
 }
 
-/* Action Cards */
+/* Action Cards Grid */
 .actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(12px, 2vw, 20px);
+  margin-bottom: clamp(16px, 2vw, 24px);
 }
 
 .action-card {
   background: var(--bg-secondary);
-  padding: 24px;
+  padding: clamp(16px, 2vw, 24px);
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
@@ -391,43 +409,71 @@ button:disabled {
 }
 
 .action-card h3 {
-  margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: clamp(12px, 1.5vw, 16px);
+}
+
+.action-card button {
+  width: 100%;
 }
 
 /* List Items */
 .list-item {
   background: var(--bg-secondary);
-  padding: 16px;
+  padding: clamp(12px, 1.5vw, 16px);
   border-radius: 8px;
-  margin-bottom: 12px;
+  margin-bottom: clamp(8px, 1vw, 12px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: transform 0.2s;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .list-item:hover {
   transform: translateX(4px);
 }
 
+@media (max-width: 640px) {
+  .list-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .list-item-left {
+    margin-bottom: 10px;
+  }
+  
+  .button-group {
+    justify-content: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .button-group button {
+    width: 100%;
+  }
+}
+
 .list-item-left {
   display: flex;
   align-items: center;
+  gap: clamp(8px, 1vw, 12px);
+  flex: 1;
+  min-width: 200px;
 }
 
 .list-item img {
-  width: 32px;
-  height: 32px;
+  width: clamp(24px, 4vw, 32px);
+  height: clamp(24px, 4vw, 32px);
   border-radius: 50%;
-  margin-right: 12px;
   object-fit: cover;
 }
 
 /* Button Groups */
 .button-group {
   display: flex;
-  gap: 8px;
+  gap: clamp(4px, 1vw, 8px);
+  flex-wrap: wrap;
 }
 
 /* Status Messages */

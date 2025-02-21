@@ -3,9 +3,10 @@ import { loadSavedTokens, saveToken } from './utils/tokenManager.js';
 import { DMManager } from './components/DMManager.js';
 import { ServerManager } from './components/ServerManager.js';
 import { FriendsManager } from './components/FriendsManager.js';
+import { GroupManager } from './components/GroupManager.js';
 import { showInfoModal } from './utils/ui.js';
 import { copyToClipboard } from './utils/clipboard.js';
-import { getFriendsList } from './utils/discord.js';  // Ajout de l'import manquant
+import { getFriendsList } from './utils/discord.js';
 
 // Initialize DOM elements
 const tokenInput = document.getElementById('tokenInput');
@@ -19,10 +20,11 @@ const contentArea = document.getElementById('contentArea');
 window.dmManager = new DMManager(contentArea);
 window.serverManager = new ServerManager(contentArea);
 window.friendsManager = new FriendsManager(contentArea);
+window.groupManager = new GroupManager(contentArea);
 
 // Make utilities globally available
 window.copyToClipboard = copyToClipboard;
-window.getFriendsList = getFriendsList;  // Rendre la fonction disponible globalement
+window.getFriendsList = getFriendsList;
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -75,36 +77,14 @@ connectBtn.addEventListener('click', async () => {
   }
 });
 
+// Groups Manager
+document.getElementById('groupsBtn').addEventListener('click', () => {
+  window.groupManager.refreshGroupsList();
+});
+
 // Friends Manager
-document.getElementById('friendsBtn').addEventListener('click', async () => {
-  try {
-    const friends = await getFriendsList();
-    
-    contentArea.innerHTML = `
-      <h2>Friends List</h2>
-      <div class="actions-bar">
-        <button id="selectAllBtn" onclick="window.toggleSelectAll()">Select All</button>
-        <button id="removeSelectedBtn" onclick="window.removeSelectedFriends()" disabled>Remove Selected</button>
-      </div>
-      <div id="friendsList">
-        ${friends.map(friend => `
-          <div class="list-item" data-id="${friend.id}">
-            <div class="list-item-left">
-              <input type="checkbox" class="friend-checkbox" onchange="window.updateSelectedCount()">
-              <img src="${friend.avatar}" alt="${friend.username}">
-              <span>${friend.username}</span>
-            </div>
-            <div class="button-group">
-              <button onclick="window.copyToClipboard('${friend.id}')" class="secondary-btn">Copy ID</button>
-              <button onclick="window.removeFriend('${friend.id}')" class="danger-btn">Remove</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  } catch (error) {
-    contentArea.innerHTML = `<p class="error">${error.message}</p>`;
-  }
+document.getElementById('friendsBtn').addEventListener('click', () => {
+  window.friendsManager.refreshFriendsList();
 });
 
 // DMs Manager
@@ -116,79 +96,3 @@ document.getElementById('dmsBtn').addEventListener('click', () => {
 document.getElementById('serversBtn').addEventListener('click', () => {
   window.serverManager.refreshServersList();
 });
-
-// Global functions
-window.copyToClipboard = copyToClipboard;
-
-window.toggleSelectAll = () => {
-  const checkboxes = document.querySelectorAll('.friend-checkbox');
-  const selectAllBtn = document.getElementById('selectAllBtn');
-  const isSelectAll = selectAllBtn.textContent === 'Select All';
-  
-  checkboxes.forEach(checkbox => {
-    checkbox.checked = isSelectAll;
-  });
-  
-  selectAllBtn.textContent = isSelectAll ? 'Deselect All' : 'Select All';
-  window.updateSelectedCount();
-};
-
-window.updateSelectedCount = () => {
-  const selectedCount = document.querySelectorAll('.friend-checkbox:checked').length;
-  const removeSelectedBtn = document.getElementById('removeSelectedBtn');
-  removeSelectedBtn.disabled = selectedCount === 0;
-  removeSelectedBtn.textContent = `Remove Selected (${selectedCount})`;
-};
-
-window.removeSelectedFriends = async () => {
-  const selectedFriends = document.querySelectorAll('.friend-checkbox:checked');
-  const total = selectedFriends.length;
-  let completed = 0;
-
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay';
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Removing Friends</h2>
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress" style="width: 0%"></div>
-        </div>
-        <div class="progress-text">0/${total}</div>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  for (const checkbox of selectedFriends) {
-    const friendItem = checkbox.closest('.list-item');
-    const friendId = friendItem.dataset.id;
-    
-    try {
-      await window.electronAPI.deleteFriend(friendId);
-      completed++;
-      
-      const progress = (completed / total) * 100;
-      modal.querySelector('.progress').style.width = `${progress}%`;
-      modal.querySelector('.progress-text').textContent = `${completed}/${total}`;
-      
-      friendItem.remove();
-    } catch (error) {
-      console.error('Failed to remove friend:', error);
-    }
-  }
-
-  setTimeout(() => {
-    modal.remove();
-    document.getElementById('friendsBtn').click();
-  }, 1000);
-};
-
-window.removeFriend = async (friendId) => {
-  try {
-    await window.electronAPI.deleteFriend(friendId);
-    document.getElementById('friendsBtn').click();
-  } catch (error) {
-    console.error('Failed to remove friend:', error);
-  }
-};

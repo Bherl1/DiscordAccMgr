@@ -5,6 +5,14 @@
   --text: #ffffff;
   --danger: #e81123;
   --title-bar-height: 32px;
+  --container-padding: clamp(10px, 2vw, 20px);
+  --content-max-width: 1400px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -16,24 +24,28 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  font-size: clamp(14px, 1vw, 16px);
+  line-height: 1.5;
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-height: 100vh;
 }
 
 .main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: var(--container-padding);
   position: relative;
+  height: calc(100vh - var(--title-bar-height));
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: clamp(8px, 1vw, 10px);
 }
 
 ::-webkit-scrollbar-track {
@@ -53,14 +65,35 @@ body {
 
 /* Responsive container */
 .container {
-  max-width: 1200px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 var(--container-padding);
   width: 100%;
-  box-sizing: border-box;
+  height: 100%;
 }
 
+/* Responsive Typography */
+h1 { font-size: clamp(24px, 3vw, 32px); }
+h2 { font-size: clamp(20px, 2.5vw, 28px); }
+h3 { font-size: clamp(18px, 2vw, 24px); }
+p { font-size: clamp(14px, 1vw, 16px); }
+
+/* Media Queries */
 @media (max-width: 768px) {
+  .container {
+    padding: 0 calc(var(--container-padding) / 2);
+  }
+  
+  .main-content {
+    padding: calc(var(--container-padding) / 2);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+  
   .container {
     padding: 0 10px;
   }

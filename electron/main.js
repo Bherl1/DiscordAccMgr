@@ -13,10 +13,9 @@ if (!fs.existsSync(tokensPath)) {
   fs.writeFileSync(tokensPath, '[]', 'utf8');
 }
 
-
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1350,
     height: 800,
     frame: false,
     webPreferences: {
@@ -40,6 +39,117 @@ ipcMain.on('window:maximize', () => {
   }
 });
 ipcMain.on('window:close', () => mainWindow.close());
+
+ipcMain.handle('discord:getGroups', async () => {
+  try {
+    if (!discordClient || !discordClient.user) {
+      return { 
+        success: false, 
+        error: 'Not connected to Discord' 
+      };
+    }
+
+    const groups = Array.from(discordClient.channels.cache.values())
+      .filter(channel => channel.type === 'GROUP_DM')
+      .map(group => ({
+        id: group.id,
+        name: group.name || 'Unnamed Group',
+        icon: group.iconURL() || '/discord.png',
+        recipients: group.recipients.size
+      }));
+
+    return { 
+      success: true, 
+      groups 
+    };
+  } catch (error) {
+    console.error('Get groups error:', error);
+    return { 
+      success: false, 
+      error: error.message 
+    };
+  }
+});
+
+ipcMain.handle('discord:leaveGroup', async (_, groupId) => {
+  try {
+    if (!discordClient || !discordClient.user) {
+      return { 
+        success: false, 
+        error: 'Not connected to Discord' 
+      };
+    }
+
+    const group = await discordClient.channels.fetch(groupId);
+    if (!group || group.type !== 'GROUP_DM') {
+      return {
+        success: false,
+        error: 'Invalid group'
+      };
+    }
+
+    await group.delete();
+    return { success: true };
+  } catch (error) {
+    console.error('Leave group error:', error);
+    return { 
+      success: false, 
+      error: error.message 
+    };
+  }
+});
+
+ipcMain.handle('discord:getGroupMessages', async (_, channelId, beforeId = null) => {
+  try {
+    if (!discordClient || !discordClient.token) {
+      return { success: false, error: 'Not connected' };
+    }
+
+    // Utiliser l'API REST directement pour récupérer plus de messages
+    const url = `https://discord.com/api/v9/channels/${channelId}/messages?limit=100${beforeId ? `&before=${beforeId}` : ''}`;
+    const response = await axios.get(url, {
+      headers: {
+        'Authorization': discordClient.token,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return {
+      success: true,
+      currentUserId: discordClient.user.id,
+      messages: response.data.map(msg => ({
+        id: msg.id,
+        content: msg.content,
+        author: {
+          id: msg.author.id
+        }
+      }))
+    };
+  } catch (error) {
+    console.error('Get group messages error:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('discord:deleteGroupMessage', async (_, channelId, messageId) => {
+  try {
+    if (!discordClient || !discordClient.token) {
+      return { success: false, error: 'Not connected' };
+    }
+
+    await axios.delete(`https://discord.com/api/v9/channels/${channelId}/messages/${messageId}`, {
+      headers: {
+        'Authorization': discordClient.token,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Delete group message error:', error);
+    return { success: false, error: error.message };
+  }
+});
 
 ipcMain.handle('discord:muteServer', async (_, serverId) => {
   try {
@@ -368,7 +478,6 @@ ipcMain.handle('discord:deleteFriend', async (_, friendId) => {
       return { success: false, error: 'Not connected to Discord' };
     }
 
-    // Use the REST API to remove friend since the client method is not available
     await axios.delete(`https://discord.com/api/v9/users/@me/relationships/${friendId}`, {
       headers: {
         'Authorization': discordClient.token,
@@ -393,7 +502,7 @@ ipcMain.handle('discord:getServers', async () => {
     }
 
     const servers = Array.from(discordClient.guilds.cache.values())
-      .filter(server => server)
+      .filter(server => server && server.ownerId !== discordClient.user.id) // Exclure les serveurs dont l'utilisateur est propriétaire
       .map(server => ({
         id: server.id,
         name: server.name,

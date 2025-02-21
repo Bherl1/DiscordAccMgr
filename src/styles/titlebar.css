@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 clamp(12px, 1.5vw, 16px);
   -webkit-app-region: drag;
   border-bottom: 1px solid var(--bg-secondary);
   position: sticky;
@@ -15,22 +15,22 @@
 .title-bar .title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(6px, 1vw, 8px);
   font-weight: 500;
-}
-
-.title-bar .title img {
-  width: 16px;
-  height: 16px;
+  font-size: clamp(14px, 1vw, 16px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .window-controls {
   display: flex;
   -webkit-app-region: no-drag;
+  margin-left: auto;
 }
 
 .window-controls button {
-  width: 46px;
+  width: clamp(32px, 4vw, 46px);
   height: var(--title-bar-height);
   display: flex;
   align-items: center;
@@ -41,13 +41,11 @@
   opacity: 0.8;
   transition: all 0.2s;
   padding: 0;
-  font-size: 18px;
 }
 
 .window-controls button svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
+  width: clamp(12px, 1.5vw, 16px);
+  height: clamp(12px, 1.5vw, 16px);
 }
 
 .window-controls button:hover {
@@ -57,4 +55,19 @@
 
 .window-controls button#closeBtn:hover {
   background: var(--danger);
+}
+
+@media (max-width: 480px) {
+  .title-bar .title {
+    font-size: 14px;
+  }
+  
+  .window-controls button {
+    width: 32px;
+  }
+  
+  .window-controls button svg {
+    width: 12px;
+    height: 12px;
+  }
 }
