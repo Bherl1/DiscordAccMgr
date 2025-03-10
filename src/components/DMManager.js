@@ -25,7 +25,10 @@ export class DMManager {
               <div class="list-item-left">
                 <input type="checkbox" class="dm-checkbox" onchange="window.dmManager.updateSelectedCount()">
                 <img src="${dm.avatar}" alt="${dm.username}">
-                <span>${dm.username}</span>
+                <div class="user-info">
+                  <span class="display-name">${dm.displayName}</span>
+                  <span class="username">(${dm.username})</span>
+                </div>
               </div>
               <div class="button-group">
                 <button onclick="window.dmManager.copyToClipboard('${dm.id}')" class="secondary-btn">Copy ID</button>

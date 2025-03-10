@@ -120,12 +120,12 @@ export async function deleteDMMessages({
         progressBar.update((deletedCount / totalMessages) * 100);
 
         // Gestion intelligente du rate limit
-        if (deletedCount % 3 === 0) {
-          // Pause plus longue tous les 3 messages pour éviter le rate limit
-          await new Promise(resolve => setTimeout(resolve, 2500));
+        if (deletedCount % 5 === 0) {
+          // Pause plus longue tous les 5 messages pour éviter le rate limit
+          await new Promise(resolve => setTimeout(resolve, 1500));
         } else {
           // Pause normale entre les messages
-          await new Promise(resolve => setTimeout(resolve, 1500));
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
       } catch (error) {
         console.error('Failed to delete message:', error);

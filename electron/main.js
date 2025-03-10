@@ -15,8 +15,10 @@ if (!fs.existsSync(tokensPath)) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1350,
-    height: 800,
+    width: 1200,
+    height: 750,
+    minWidth: 770,
+    minHeight: 600,
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -331,6 +333,7 @@ ipcMain.handle('discord:getFriends', async () => {
       .map(friend => ({
         id: friend.user.id,
         username: friend.user.username,
+        displayName: friend.user.global_name || friend.user.username,
         avatar: friend.user.avatar ? `https://cdn.discordapp.com/avatars/${friend.user.id}/${friend.user.avatar}.png` : '/discord.png'
       }));
 
@@ -361,6 +364,7 @@ ipcMain.handle('discord:getDMs', async () => {
       .map(dm => ({
         id: dm.id,
         username: dm.recipient?.username || 'Unknown User',
+        displayName: dm.recipient?.globalName || dm.recipient?.username || 'Unknown User',
         avatar: dm.recipient?.avatarURL() || '/discord.png'
       }));
 

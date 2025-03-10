@@ -8,23 +8,81 @@ import { showInfoModal } from './utils/ui.js';
 import { copyToClipboard } from './utils/clipboard.js';
 import { getFriendsList } from './utils/discord.js';
 
-// Initialize DOM elements
-const tokenInput = document.getElementById('tokenInput');
-const connectBtn = document.getElementById('connectBtn');
-const saveTokenBtn = document.getElementById('saveTokenBtn');
-const status = document.getElementById('status');
-const actions = document.getElementById('actions');
-const contentArea = document.getElementById('contentArea');
-
 // Initialize managers
-window.dmManager = new DMManager(contentArea);
-window.serverManager = new ServerManager(contentArea);
-window.friendsManager = new FriendsManager(contentArea);
-window.groupManager = new GroupManager(contentArea);
+window.dmManager = new DMManager(document.getElementById('dms-page'));
+window.serverManager = new ServerManager(document.getElementById('servers-page'));
+window.friendsManager = new FriendsManager(document.getElementById('friends-page'));
+window.groupManager = new GroupManager(document.getElementById('groups-page'));
 
 // Make utilities globally available
 window.copyToClipboard = copyToClipboard;
 window.getFriendsList = getFriendsList;
+
+// Navigation handling
+const navItems = document.querySelectorAll('.nav-item');
+const pages = document.querySelectorAll('.page-container');
+const userProfile = document.getElementById('userProfile');
+const loginNavItem = document.getElementById('loginNavItem');
+
+function showUserProfile(username) {
+  const userInitial = document.getElementById('userInitial');
+  const userName = document.getElementById('userName');
+  
+  userInitial.textContent = username.charAt(0).toUpperCase();
+  userName.textContent = username;
+  userProfile.classList.add('visible');
+}
+
+function hideUserProfile() {
+  userProfile.classList.remove('visible');
+}
+
+function toggleNavItems(show) {
+  document.querySelectorAll('.nav-item:not(#loginNavItem)').forEach(item => {
+    item.classList.toggle('hidden', !show);
+  });
+  loginNavItem.classList.toggle('hidden', show);
+}
+
+function switchPage(pageId) {
+  pages.forEach(page => {
+    page.classList.remove('active');
+    if (page.id === `${pageId}-page`) {
+      setTimeout(() => page.classList.add('active'), 50);
+    }
+  });
+
+  navItems.forEach(item => {
+    item.classList.remove('active');
+    if (item.dataset.page === pageId) {
+      item.classList.add('active');
+    }
+  });
+
+  // Load content based on page
+  switch (pageId) {
+    case 'friends':
+      window.friendsManager.refreshFriendsList();
+      break;
+    case 'servers':
+      window.serverManager.refreshServersList();
+      break;
+    case 'dms':
+      window.dmManager.refreshDMsList();
+      break;
+    case 'groups':
+      window.groupManager.refreshGroupsList();
+      break;
+  }
+}
+
+// Initialize visibility
+toggleNavItems(false);
+switchPage('login');
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => switchPage(item.dataset.page));
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -40,9 +98,22 @@ document.getElementById('minimizeBtn').addEventListener('click', () => window.el
 document.getElementById('maximizeBtn').addEventListener('click', () => window.electronAPI.maximize());
 document.getElementById('closeBtn').addEventListener('click', () => window.electronAPI.close());
 document.getElementById('infoBtn').addEventListener('click', showInfoModal);
-saveTokenBtn.addEventListener('click', () => saveToken(tokenInput.value, status));
+document.getElementById('saveTokenBtn').addEventListener('click', () => saveToken(tokenInput.value, status));
+
+// Disconnect handler
+document.getElementById('disconnectBtn').addEventListener('click', () => {
+  hideUserProfile();
+  toggleNavItems(false);
+  switchPage('login');
+  tokenInput.value = '';
+  status.textContent = '';
+});
 
 // Connect button handler
+const connectBtn = document.getElementById('connectBtn');
+const tokenInput = document.getElementById('tokenInput');
+const status = document.getElementById('status');
+
 connectBtn.addEventListener('click', async () => {
   const token = tokenInput.value;
   if (!token) {
@@ -62,7 +133,9 @@ connectBtn.addEventListener('click', async () => {
     if (result.success) {
       status.textContent = `Connected as ${result.username}`;
       status.className = 'success';
-      actions.style.display = 'grid';
+      showUserProfile(result.username);
+      toggleNavItems(true);
+      switchPage('friends');
     } else {
       status.textContent = result.error;
       status.className = 'error';
@@ -75,24 +148,4 @@ connectBtn.addEventListener('click', async () => {
     loader.style.display = 'none';
     connectBtn.disabled = false;
   }
-});
-
-// Groups Manager
-document.getElementById('groupsBtn').addEventListener('click', () => {
-  window.groupManager.refreshGroupsList();
-});
-
-// Friends Manager
-document.getElementById('friendsBtn').addEventListener('click', () => {
-  window.friendsManager.refreshFriendsList();
-});
-
-// DMs Manager
-document.getElementById('dmsBtn').addEventListener('click', () => {
-  window.dmManager.refreshDMsList();
-});
-
-// Servers Manager
-document.getElementById('serversBtn').addEventListener('click', () => {
-  window.serverManager.refreshServersList();
 });

@@ -427,10 +427,15 @@ button:disabled {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 10px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 .list-item:hover {
   transform: translateX(4px);
+  background: var(--bg-tertiary);
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 640px) {
@@ -463,8 +468,8 @@ button:disabled {
 }
 
 .list-item img {
-  width: clamp(24px, 4vw, 32px);
-  height: clamp(24px, 4vw, 32px);
+  width: clamp(32px, 4vw, 40px);
+  height: clamp(32px, 4vw, 40px);
   border-radius: 50%;
   object-fit: cover;
 }
@@ -476,7 +481,6 @@ button:disabled {
   flex-wrap: wrap;
 }
 
-/* Status Messages */
 #status {
   margin-top: 12px;
   padding: 8px;
@@ -493,14 +497,12 @@ button:disabled {
   color: #99a3ff;
 }
 
-/* Actions Bar */
 .actions-bar {
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
 }
 
-/* Progress Bar */
 .progress-container {
   margin-top: 20px;
 }
@@ -526,7 +528,6 @@ button:disabled {
   margin-bottom: 16px;
 }
 
-/* Cancel Button */
 .cancel-button {
   display: block;
   width: 100%;
@@ -548,7 +549,6 @@ button:disabled {
   transform: scale(0.98);
 }
 
-/* Copy Notification */
 .copy-notification {
   position: fixed;
   bottom: 20px;

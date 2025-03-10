@@ -26,7 +26,10 @@ export class FriendsManager {
               <div class="list-item-left">
                 <input type="checkbox" class="friend-checkbox" onchange="window.friendsManager.updateSelectedCount()">
                 <img src="${friend.avatar}" alt="${friend.username}">
-                <span>${friend.username}</span>
+                <div class="user-info">
+                  <span class="display-name">${friend.displayName}</span>
+                  <span class="username">(${friend.username})</span>
+                </div>
               </div>
               <div class="button-group">
                 <button onclick="window.friendsManager.copyId('${friend.id}')" class="secondary-btn">Copy ID</button>

@@ -39,45 +39,94 @@
       </div>
     </div>
 
-    <div class="main-content">
-      <div class="container">
-        <div class="connection-panel">
-          <h2>Connection</h2>
-          <div class="input-group">
-            <input type="password" id="tokenInput" placeholder="Enter your Discord token">
-            <button id="saveTokenBtn">Save Token</button>
-            <button id="connectBtn">
-              <span class="btn-text">Connect</span>
-              <div class="loader" style="display: none;"></div>
-            </button>
+    <div class="main-wrapper">
+      <!-- Navigation Sidebar -->
+      <nav class="nav-sidebar">
+        <div class="nav-items">
+          <div class="nav-item active" data-page="login" id="loginNavItem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M13 12H3"/>
+            </svg>
+            <span>Login</span>
           </div>
-          <div class="token-management" id="tokenManagement"></div>
-          <p id="status"></p>
+          <div class="nav-item hidden" data-page="friends">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Friends</span>
+          </div>
+          <div class="nav-item hidden" data-page="servers">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            </svg>
+            <span>Servers</span>
+          </div>
+          <div class="nav-item hidden" data-page="dms">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span>DMs</span>
+          </div>
+          <div class="nav-item hidden" data-page="groups">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Groups</span>
+          </div>
+        </div>
+        
+        <!-- User Profile -->
+        <div class="user-profile" id="userProfile">
+          <div class="user-avatar">
+            <span id="userInitial"></span>
+          </div>
+          <div class="user-info">
+            <div class="user-name" id="userName"></div>
+          </div>
+          <button class="disconnect-btn" id="disconnectBtn">
+            Disconnect
+          </button>
+        </div>
+      </nav>
+
+      <!-- Main Content Area -->
+      <div class="main-content">
+        <!-- Login Page -->
+        <div class="page-container active" id="login-page">
+          <div class="login-container">
+            <div class="login-box">
+              <h1>Welcome Back</h1>
+              <div class="input-group">
+                <input type="password" id="tokenInput" placeholder="Enter your Discord token">
+              </div>
+              <div class="button-group">
+                <button id="connectBtn">
+                  <span class="btn-text">Connect</span>
+                  <div class="loader" style="display: none;"></div>
+                </button>
+                <button id="saveTokenBtn" class="secondary">Save Token</button>
+              </div>
+              <div id="status"></div>
+              <div class="token-management" id="tokenManagement"></div>
+            </div>
+          </div>
         </div>
 
-        <div class="actions" id="actions" style="display: none;">
-          <div class="action-card">
-            <h3>Friends Manager</h3>
-            <button id="friendsBtn">Manage Friends</button>
-          </div>
-          
-          <div class="action-card">
-            <h3>Server Manager</h3>
-            <button id="serversBtn">Manage Servers</button>
-          </div>
+        <!-- Friends Page -->
+        <div class="page-container" id="friends-page"></div>
 
-          <div class="action-card">
-            <h3>DM Manager</h3>
-            <button id="dmsBtn">Manage DMs</button>
-          </div>
+        <!-- Servers Page -->
+        <div class="page-container" id="servers-page"></div>
 
-          <div class="action-card">
-            <h3>Group Manager</h3>
-            <button id="groupsBtn">Manage Groups</button>
-          </div>
-        </div>
+        <!-- DMs Page -->
+        <div class="page-container" id="dms-page"></div>
 
-        <div id="contentArea"></div>
+        <!-- Groups Page -->
+        <div class="page-container" id="groups-page"></div>
       </div>
     </div>
   </div>
