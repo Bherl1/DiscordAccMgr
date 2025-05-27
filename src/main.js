@@ -8,17 +8,14 @@ import { showInfoModal } from './utils/ui.js';
 import { copyToClipboard } from './utils/clipboard.js';
 import { getFriendsList } from './utils/discord.js';
 
-// Initialize managers
 window.dmManager = new DMManager(document.getElementById('dms-page'));
 window.serverManager = new ServerManager(document.getElementById('servers-page'));
 window.friendsManager = new FriendsManager(document.getElementById('friends-page'));
 window.groupManager = new GroupManager(document.getElementById('groups-page'));
 
-// Make utilities globally available
 window.copyToClipboard = copyToClipboard;
 window.getFriendsList = getFriendsList;
 
-// Navigation handling
 const navItems = document.querySelectorAll('.nav-item');
 const pages = document.querySelectorAll('.page-container');
 const userProfile = document.getElementById('userProfile');

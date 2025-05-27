@@ -49,7 +49,8 @@ export class GroupManager {
               </div>
               <div class="button-group">
                 <button onclick="window.groupManager.copyId('${group.id}')" class="secondary-btn">Copy ID</button>
-                <button onclick="window.groupManager.deleteMessages('${group.id}', '${group.name}')" class="secondary-btn">Delete Messages</button>
+                <button onclick="window.groupManager.deleteMessages('${group.id}', '${group.name}', false)" class="secondary-btn">Delete Messages</button>
+                <button onclick="window.groupManager.deleteMessages('${group.id}', '${group.name}', true)" class="secondary-btn">Delete Oldest First</button>
                 <button onclick="window.groupManager.leaveGroup('${group.id}')" class="danger-btn">Leave</button>
               </div>
             </div>
@@ -77,7 +78,7 @@ export class GroupManager {
     const deleteSelectedBtn = document.getElementById('deleteSelectedMessagesBtn');
     
     leaveSelectedBtn.disabled = selectedCount === 0;
-    deleteSelectedBtn.disabled;
+    deleteSelectedBtn.disabled = selectedCount === 0;
     
     leaveSelectedBtn.textContent = `Leave Selected (${selectedCount})`;
     deleteSelectedBtn.textContent = `Delete Selected Messages (${selectedCount})`;
@@ -87,7 +88,7 @@ export class GroupManager {
     await copyToClipboard(id);
   }
 
-  async deleteMessages(groupId, groupName, skipRefresh = false) {
+  async deleteMessages(groupId, groupName, oldestFirst = false, skipRefresh = false) {
     if (this.isDeleting) return;
     this.isDeleting = true;
 
@@ -103,7 +104,8 @@ export class GroupManager {
           }
         },
         skipRefresh,
-        isGroup: true // Important: indique que c'est un groupe
+        isGroup: true,
+        oldestFirst
       });
     } catch (error) {
       console.error('Failed to delete messages:', error);
@@ -164,7 +166,7 @@ export class GroupManager {
       const groupName = groupItem.dataset.name;
       
       try {
-        await this.deleteMessages(groupId, groupName, true);
+        await this.deleteMessages(groupId, groupName, false, true);
         completed++;
         updateProgress(completed);
       } catch (error) {

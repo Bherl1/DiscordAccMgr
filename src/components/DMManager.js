@@ -32,7 +32,8 @@ export class DMManager {
               </div>
               <div class="button-group">
                 <button onclick="window.dmManager.copyToClipboard('${dm.id}')" class="secondary-btn">Copy ID</button>
-                <button onclick="window.dmManager.deleteDMMessages('${dm.id}', '${dm.username}')" class="secondary-btn">Delete Messages</button>
+                <button onclick="window.dmManager.deleteDMMessages('${dm.id}', '${dm.username}', false)" class="secondary-btn">Delete Messages</button>
+                <button onclick="window.dmManager.deleteDMMessages('${dm.id}', '${dm.username}', true)" class="secondary-btn">Delete Oldest First</button>
                 <button onclick="window.dmManager.closeDM('${dm.id}')" class="danger-btn">Close DM</button>
               </div>
             </div>
@@ -108,7 +109,7 @@ export class DMManager {
 
   copyToClipboard = copyToClipboard;
 
-  async deleteDMMessages(channelId, username, skipRefresh = false) {
+  async deleteDMMessages(channelId, username, oldestFirst = false, skipRefresh = false) {
     if (this.isDeleting) return;
     this.isDeleting = true;
 
@@ -123,7 +124,8 @@ export class DMManager {
             this.refreshDMsList();
           }
         },
-        skipRefresh
+        skipRefresh,
+        oldestFirst
       });
     } catch (error) {
       console.error('Failed to delete messages:', error);

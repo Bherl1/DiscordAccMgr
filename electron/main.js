@@ -8,7 +8,6 @@ let mainWindow;
 let discordClient = null;
 const tokensPath = path.join(app.getPath('userData'), 'saved_tokens.json');
 
-// Ensure tokens file exists
 if (!fs.existsSync(tokensPath)) {
   fs.writeFileSync(tokensPath, '[]', 'utf8');
 }
@@ -31,7 +30,6 @@ function createWindow() {
   mainWindow.loadFile('./index.html');
 }
 
-// Window controls
 ipcMain.on('window:minimize', () => mainWindow.minimize());
 ipcMain.on('window:maximize', () => {
   if (mainWindow.isMaximized()) {
@@ -107,7 +105,6 @@ ipcMain.handle('discord:getGroupMessages', async (_, channelId, beforeId = null)
       return { success: false, error: 'Not connected' };
     }
 
-    // Utiliser l'API REST directement pour récupérer plus de messages
     const url = `https://discord.com/api/v9/channels/${channelId}/messages?limit=100${beforeId ? `&before=${beforeId}` : ''}`;
     const response = await axios.get(url, {
       headers: {
@@ -323,8 +320,7 @@ ipcMain.handle('discord:getFriends', async () => {
 
     const response = await axios.get('https://discord.com/api/v9/users/@me/relationships', {
       headers: {
-        'Authorization': discordClient.token,
-        'Content-Type': 'application/json'
+        'Authorization': discordClient.token
       }
     });
 

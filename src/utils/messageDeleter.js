@@ -6,7 +6,8 @@ export async function deleteDMMessages({
   electronAPI,
   onComplete = () => {},
   skipRefresh = false,
-  isGroup = false
+  isGroup = false,
+  oldestFirst = false
 }) {
   const modalOverlay = document.createElement('div');
   modalOverlay.className = 'modal-overlay';
@@ -102,6 +103,11 @@ export async function deleteDMMessages({
 
     if (totalMessages === 0) {
       throw new Error('No messages to delete');
+    }
+
+    // Sort messages based on deletion order preference
+    if (oldestFirst) {
+      deletableMessages.reverse();
     }
 
     // Second pass: delete collected messages
