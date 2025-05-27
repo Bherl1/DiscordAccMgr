@@ -74,7 +74,7 @@ export const showInfoModal = () => {
   title.textContent = 'Discord Account Manager';
 
   const version = document.createElement('p');
-  version.textContent = `Version 1.5.5`;
+  version.textContent = `Version 1.5.6`;
 
   const author = document.createElement('p');
   author.textContent = 'Created by Bherl1';
